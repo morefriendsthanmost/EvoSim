@@ -66,3 +66,14 @@ class Creature(object):
         '''
 
         return (self.x_location, self.y_location)
+
+    def runTick(self,tick_length):
+        
+        '''
+        defines how the creature deals with a tick
+        '''
+
+        #do sensory stuff
+        #do movement
+        #metabolism
+        self.current_energy += -(0.007*self.sensory_range*self.volume)

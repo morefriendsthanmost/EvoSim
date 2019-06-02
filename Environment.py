@@ -1,7 +1,6 @@
 #File to add code for the environment in which the creatures reside
 
 class Environment(object):
-
     def __init__(self, creatures, foods):
 
         '''
@@ -20,6 +19,26 @@ class Environment(object):
         for i in range (len(foods)):
             positions_of_foods.append(foods[i].getLocation())
         self.positions_of_foods = positions_of_foods
+
+        all_objects = []
+        for i in range (len(foods)):
+            temp = []
+            temp.append(foods[i])
+            temp.append(foods[i].getLocation())
+            all_objects.append(temp)
+        for i in range (len(creatures)):
+            temp = []
+            temp.append(creatures[i])
+            temp.append(creatures[i].getLocation())
+            all_objects.append(temp)         
+
+    def getObjects(self):
+
+        '''
+        returns the coordinates of the piece of food
+        '''
+
+        return (self.all_objects)
 
     pass
 

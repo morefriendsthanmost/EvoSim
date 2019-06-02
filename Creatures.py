@@ -2,13 +2,14 @@
 import math
 
 unique_ID = 0
+
 class Creature(object):
 
     '''
     The class to define a creature, its properties and the various things it can do
     '''
 
-    def init(self,x_location,y_location,speed,cycle_energy,mass):
+    def init(self, x_location, y_location, speed, cycle_energy, mass, sensory_range):
 
         '''
         Defines a creature on the class calling
@@ -20,6 +21,7 @@ class Creature(object):
         self.cycle_energy = cycle_energy
         self.current_energy = None
         self.mass = mass
+        self.sensory_range = sensory_range
 
         global unique_ID
         unique_ID += 1
@@ -42,3 +44,25 @@ class Creature(object):
         '''
 
         self.current_energy += food_energy
+
+    def getSensoryData(self):
+        '''
+        Discovers what is within the sensory range of the creature
+        '''
+        #yet to figure out - needs to return an array of objects in the range of this creatures senses - food and other creatures, possibly with the other creatures being seperated into threat or mate? assuming reproduction is done traditionally...
+        pass 
+
+    def startCycle(self):
+
+        '''
+        configures the creature for the start of an evolutionary 'cycle'
+        '''
+
+        self.current_energy = self.cycle_energy
+
+    def findPath(self,tick_length):
+        for each in self.getSensoryData():
+            #find the best thing to run towards/find something to run away from
+            pass
+        #find direction to move from sensory data
+        self.moveOneTick(direction,ticklength)

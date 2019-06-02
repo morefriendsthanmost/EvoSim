@@ -9,7 +9,7 @@ class Creature(object):
     The class to define a creature, its properties and the various things it can do
     '''
 
-    def init(self, x_location, y_location, speed, cycle_energy, mass, sensory_range):
+    def init(self, x_location, y_location, speed, cycle_energy, radius, sensory_range):
 
         '''
         Defines a creature on the class calling
@@ -19,8 +19,8 @@ class Creature(object):
         self.y_location = y_location
         self.speed = speed
         self.current_energy = None
-        self.mass = mass
-        self.size = pow(self.mass,3)
+        self.radius = radius
+        self.volume = 4/3 * math.pi * pow(self.radius,3)
         self.sensory_range = sensory_range
 
         global unique_ID
@@ -35,7 +35,7 @@ class Creature(object):
 
         self.x_location += (self.speed * tick_length * math.cos(direction))
         self.y_location += (self.speed * tick_length * math.sin(direction))
-        self.current_energy += -(self.mass * self.speed / tick_length) # based off of mv^2/2 - except wanted it to be per unit distance, so then divide by distance, which becomes mv^2/2*v*t, which is mv/2t. Very much up to debate.
+        self.current_energy += -(self.volume * self.speed / tick_length) # based off of mv^2/2 - except wanted it to be per unit distance, so then divide by distance, which becomes mv^2/2*v*t, which is mv/2t. Very much up to debate.
 
     def eatFood(self, food_energy):
         

@@ -18,9 +18,9 @@ class Creature(object):
         self.x_location = x_location
         self.y_location = y_location
         self.speed = speed
-        self.cycle_energy = cycle_energy
         self.current_energy = None
         self.mass = mass
+        self.size = pow(self.mass,3)
         self.sensory_range = sensory_range
 
         global unique_ID
@@ -35,9 +35,9 @@ class Creature(object):
 
         self.x_location += (self.speed * tick_length * math.cos(direction))
         self.y_location += (self.speed * tick_length * math.sin(direction))
-        self.current_energy += -(self.mass * self.speed/tick_length) # based off of mv^2/2 - except wanted it to be per unit distance, so then divide by distance, which becomes mv^2/2*v*t, which is mv/2t. Very much up to debate.
+        self.current_energy += -(self.mass * self.speed / tick_length) # based off of mv^2/2 - except wanted it to be per unit distance, so then divide by distance, which becomes mv^2/2*v*t, which is mv/2t. Very much up to debate.
 
-    def eatFood(self,food_energy):
+    def eatFood(self, food_energy):
         
         '''
         Adds food consumed to the current energy
@@ -52,17 +52,17 @@ class Creature(object):
         #yet to figure out - needs to return an array of objects in the range of this creatures senses - food and other creatures, possibly with the other creatures being seperated into threat or mate? assuming reproduction is done traditionally...
         pass 
 
-    def startCycle(self):
-
-        '''
-        configures the creature for the start of an evolutionary 'cycle'
-        '''
-
-        self.current_energy = self.cycle_energy
-
-    def findPath(self,tick_length):
+    def findPath(self, tick_length):
         for each in self.getSensoryData():
             #find the best thing to run towards/find something to run away from
             pass
         #find direction to move from sensory data
-        self.moveOneTick(direction,ticklength)
+        self.moveOneTick(direction, ticklength)
+
+    def getLocation(self):
+
+        '''
+        returns the coordinates of the creature
+        '''
+
+        return (self.x_location, self.y_location)

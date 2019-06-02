@@ -9,7 +9,7 @@ class Creature(object):
     The class to define a creature, its properties and the various things it can do
     '''
 
-    def init(self, x_location, y_location, speed, cycle_energy, radius, sensory_range):
+    def init(self, x_location, y_location, speed, cycle_energy, radius, sensory_range, environment):
 
         '''
         Defines a creature on the class calling
@@ -22,6 +22,7 @@ class Creature(object):
         self.radius = radius
         self.volume = 4/3 * math.pi * pow(self.radius,3)
         self.sensory_range = sensory_range
+        self.environment = environment
 
         global unique_ID
         unique_ID += 1
@@ -49,8 +50,14 @@ class Creature(object):
         '''
         Discovers what is within the sensory range of the creature
         '''
-        #yet to figure out - needs to return an array of objects in the range of this creatures senses - food and other creatures, possibly with the other creatures being seperated into threat or mate? assuming reproduction is done traditionally...
-        pass 
+        all_objects = self.environment.getObjects()
+        relevant_objects = []
+        for each in all_objects:
+            if self.x_location - self.sensory_range <= each[1][0] <= self.x_location + self.sensory_range: #rules out by x
+                if self.y_location - self.sensory_range <= each[1][1] <= self.y_location + self.sensory_range: #rules out by y
+                    if pow(pow(self.y_location - each[1][1], 2) + pow(self.x_location - each[1][0], 2), 1/2) <= self.sensory_range: # actually calculates the distance
+                        relevant_objects.append([each[0], each[1], pow(pow(self.y_location - each[1][1], 2) + pow(self.x_location - each[1][0], 2), 1/2)])
+        relevant_objects.sort(key = lambda x:x[2]) #sorts by distance to object
 
     def findPath(self, tick_length):
         for each in self.getSensoryData():

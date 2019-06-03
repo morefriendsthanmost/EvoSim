@@ -64,7 +64,7 @@ class Creature(object):
         return relevant_objects
         
 
-    def findPath(self, tick_length):
+    def findPath(self):
         i = 0
         relevant_objects = self.getSensoryData()
         while not isinstance(relevant_objects[i][0],Environment.Food): #ticks through until the first peice of food is found

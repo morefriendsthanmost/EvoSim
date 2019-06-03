@@ -7,7 +7,7 @@ def getDistance(position_one, position_two):
 
 
 class Environment(object):
-    def __init__(self, creatures, foods):
+    def __init__(self, creatures, foods, tick_length = 1):
 
         '''
         Defines the enviroment on the class calling
@@ -29,7 +29,7 @@ class Environment(object):
     
 
         #####Define tick_length, to change when we know more about it#####
-        self.tick_length = 1
+        self.tick_length = tick_length
 
 
     def getObjects(self):
@@ -38,16 +38,16 @@ class Environment(object):
         returns the coordinates of the piece of food
         '''
         all_objects = []
-        for i in range (len(foods)):
-            temp = []
-            temp.append(foods[i])
-            temp.append(foods[i].getLocation())
-            all_objects.append(temp)
         for i in range (len(creatures)):
             temp = []
             temp.append(creatures[i])
             temp.append(creatures[i].getLocation())
-            all_objects.append(temp)     
+            all_objects.append(temp)  
+        for i in range (len(foods)):
+            temp = []
+            temp.append(foods[i])
+            temp.append(foods[i].getLocation())
+            all_objects.append(temp)   
         return (all_objects)
 
     def tick (self):

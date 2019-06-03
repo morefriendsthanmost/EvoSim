@@ -26,6 +26,17 @@ class Environment(object):
             positions_of_foods.append(foods[i].getLocation())
         self.positions_of_foods = positions_of_foods
 
+    
+
+        #####Define tick_length, to change when we know more about it#####
+        self.tick_length = 1
+
+
+    def getObjects(self):
+
+        '''
+        returns the coordinates of the piece of food
+        '''
         all_objects = []
         for i in range (len(foods)):
             temp = []
@@ -36,19 +47,8 @@ class Environment(object):
             temp = []
             temp.append(creatures[i])
             temp.append(creatures[i].getLocation())
-            all_objects.append(temp)         
-
-        #####Define ticklenght, to change when we know more about it#####
-        self.ticklenght = 1
-
-
-    def getObjects(self):
-
-        '''
-        returns the coordinates of the piece of food
-        '''
-
-        return (self.all_objects)
+            all_objects.append(temp)     
+        return (all_objects)
 
     def tick (self):
         

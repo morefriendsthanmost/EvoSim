@@ -1,6 +1,6 @@
 #File to add code for the creatures
 import math
-import Environment
+import Environment as env
 
 unique_ID = 0
 
@@ -59,7 +59,7 @@ class Creature(object):
             if self.x_location - self.sensory_range <= each[1][0] <= self.x_location + self.sensory_range: #rules out by x
                 if self.y_location - self.sensory_range <= each[1][1] <= self.y_location + self.sensory_range: #rules out by y
                     if pow(pow(self.y_location - each[1][1], 2) + pow(self.x_location - each[1][0], 2), 1/2) <= self.sensory_range: # actually calculates the distance
-                        relevant_objects.append([each[0], each[1], pow(pow(self.y_location - each[1][1], 2) + pow(self.x_location - each[1][0], 2), 1/2)])
+                        relevant_objects.append([each[0], each[1], env.getDistance(self.getLocation(),each[0].getLocation())])
         relevant_objects.sort(key = lambda x:x[2]) #sorts by distance to object
         return relevant_objects
         

@@ -20,7 +20,7 @@ class Creature(object):
         self.x_location = x_location
         self.y_location = y_location
         self.speed = speed
-        self.current_energy = None
+        self.current_energy = starting_energy
         self.radius = radius
         self.volume = 4/3 * math.pi * pow(self.radius,3)
         self.sensory_range = sensory_range

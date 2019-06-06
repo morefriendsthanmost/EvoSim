@@ -1,6 +1,7 @@
 #File to add code for the environment in which the creatures reside
 import Creatures as crt
 import numpy as np
+import copy as copy
 
 def generateRandomNumberWithLowerLimit (mean, sigma, lower_limit):
     x = np.random.normal(mean, sigma)
@@ -75,6 +76,7 @@ class Environment(object):
             x, y, speed, radius, sensory_range = generateCreatureVariables (100)
             creaturs.append(crt.Creature(x, y, speed, 250, radius, sensory_range, self))
         self.creatures = creatures
+        
         #will get the position of each creature
         positions_of_creatures = []
         for i in range (len(creatures)):
@@ -85,12 +87,17 @@ class Environment(object):
         for i in range (number_of_foods):
             foods.append(Food(generateFoodVariables (100)))
         self.foods = foods
+
         #will get the position of each piece of food
         for i in range (len(foods)):
             positions_of_foods.append(foods[i].getLocation())
         self.positions_of_foods = positions_of_foods
+        
+        self.creatures_over_time = [creatures]
+        self.foods_over_time     = [foods]
 
-    
+        #self.creature_positions_over_time = [positions_of_creatures]
+        #self.food_positions_over_time     = [positions_of_foods]    
 
         #####Define tick_length, to change when we know more about it#####
         self.tick_length = tick_length
@@ -102,15 +109,15 @@ class Environment(object):
         returns the coordinates of the piece of food
         '''
         all_objects = []
-        for i in range (len(creatures)):
+        for i in range (len(self.creatures)):
             temp = []
-            temp.append(creatures[i])
-            temp.append(creatures[i].getLocation())
+            temp.append(self.creatures[i])
+            temp.append(self.creatures[i].getLocation())
             all_objects.append(temp)  
-        for i in range (len(foods)):
+        for i in range (len(self.foods)):
             temp = []
-            temp.append(foods[i])
-            temp.append(foods[i].getLocation())
+            temp.append(self.foods[i])
+            temp.append(self.foods[i].getLocation())
             all_objects.append(temp)   
         return (all_objects)
 
@@ -124,18 +131,29 @@ class Environment(object):
             #gets the direction it will move in
             direction = self.creatures[i].findPath()
             #makes the creature move in that direction
-            creatures[i].moveOneTick(direction,tick_length)
+            self.creatures[i].moveOneTick(direction,tick_length)
             # updates the list of positions
-            positions_of_creatures[i] = creatures[i].getLocation()
+            self.positions_of_creatures[i] = self.creatures[i].getLocation()
             #checks if the creature ovelaps with food, and if so, consumes it and then removes it from the list of foods
             for j in range (len(self.foods)):
-                distance = getDistance(positions_of_foods[j],positions_of_creatures[i])
-                if (distance < (creatures[i].radius+foods[j].radius)):
-                    creatures[i].eatFood(foods[i].energy)
-                    del foods[j]
-                    del positions_of_foods[j]
-                    
+                distance = getDistance(self.positions_of_foods[j],self.positions_of_creatures[i])
+                if (distance < (self.creatures[i].radius+self.foods[j].radius)):
+                    self.creatures[i].eatFood(foods[i].energy)
+                    del self.foods[j]
+                    del self.positions_of_foods[j]
+        
+        self.creatures_over_time.append(copy.deepcopy(self.creatures))
+        #self.creature_positions_over_time.append(copy.deepcopy(self.positions_of_creatures))
+        #self.food_positions_over_time.append(copy.deepcopy(self.positions_of_foods))
+        self.foods_over_time.append(copy.deepcopy(self.foods))
         pass
+
+    def getAnimationData (self):
+        '''
+        returns 4 lists, one that contains all the lists of creatures after each tick, one all the lists of creature positions after each tick, one all the lists of food after each tick, and one all the lists of food positions over each tick
+        '''
+        #return (self.creatures_over_time, self.creature_positions_over_time, self.foods_over_time, self.food_positions_over_time)
+        return (self.creatures_over_time, self.foods_over_time)
     pass
 
 class Food(object):
@@ -159,3 +177,10 @@ class Food(object):
 
         return (self.x_location, self.y_location)
     pass
+
+
+def runCycle(number_of_creatures, number_of_foods, number_of_ticks):
+    environment = Environment(number_of_creatures, number_of_foods)
+    for i in range (number_of_ticks):
+        environment.tick()
+    return (environment.getAnimationData())

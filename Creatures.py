@@ -1,6 +1,7 @@
 #File to add code for the creatures
 import math
 import Environment as env
+import numpy as np
 
 unique_ID = 0
 
@@ -72,8 +73,17 @@ class Creature(object):
 
         i = 0
         relevant_objects = self.getSensoryData()
-        while not isinstance(relevant_objects[i][0],env.Food): #ticks through until the first peice of food is found
-            i += 1
+        try:
+            while not isinstance(relevant_objects[i][0],env.Food): #ticks through until the first peice of food is found
+                i += 1
+        except:
+            a = np.random.random() - 0.5 #pick a random x between -0.5 and 0.5
+            b = np.random.random() - 0.5 #pick a random y between -0.5 and 0.5
+            while not (-50 <= (self.speed * tick_length * math.cos(getDirection((a,b)))+ self.x_location) <= 50 
+                       and -50 <= (self.speed * tick_length * math.sin(getDirection((a,b)))+ self.y_location) <= 50): #checks to make sure that moving in this direction wont move it outside the environment arena, if it does, reselect a and b
+                a = np.random.random() - 0.5
+                b = np.random.random() - 0.5
+            return getDirection((a,b)) #return this random direction
         return getDirection((relevant_objects[i][1][0]-self.x_location,relevant_objects[i][1][1]-self.y_location))
         
 

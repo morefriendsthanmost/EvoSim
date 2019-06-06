@@ -85,10 +85,12 @@ class Environment(object):
 
         foods = []
         for i in range (number_of_foods):
-            foods.append(Food(generateFoodVariables (100)))
+            food_x_location, food_y_location, food_energy = generateFoodVariables (100)
+            foods.append(Food(food_x_location, food_y_location, food_energy))
         self.foods = foods
 
         #will get the position of each piece of food
+        positions_of_foods = []
         for i in range (len(foods)):
             positions_of_foods.append(foods[i].getLocation())
         self.positions_of_foods = positions_of_foods

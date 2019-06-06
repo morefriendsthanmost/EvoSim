@@ -72,7 +72,7 @@ class Creature(object):
 
         i = 0
         relevant_objects = self.getSensoryData()
-        while not isinstance(relevant_objects[i][0],Environment.Food): #ticks through until the first peice of food is found
+        while not isinstance(relevant_objects[i][0],env.Food): #ticks through until the first peice of food is found
             i += 1
         return getDirection((relevant_objects[i][1][0]-self.x_location,relevant_objects[i][1][1]-self.y_location))
         
@@ -94,4 +94,4 @@ class Creature(object):
         self.current_energy += -(0.007*self.sensory_range*self.volume)
 
 def getDirection(vec):
-    return math.acos(vec1[0]/pow(pow(vec[0],2) + pow(vec[1],2),1/2))
+    return math.acos(vec[0]/pow(pow(vec[0],2) + pow(vec[1],2),1/2))

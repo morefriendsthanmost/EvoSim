@@ -10,7 +10,7 @@ class Creature(object):
     The class to define a creature, its properties and the various things it can do
     '''
 
-    def init(self, x_location, y_location, speed, starting_energy, radius, sensory_range, environment):
+    def __init__(self, x_location, y_location, speed, starting_energy, radius, sensory_range, environment):
 
         '''
         Defines a creature on the class calling

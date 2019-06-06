@@ -133,7 +133,7 @@ class Environment(object):
             #gets the direction it will move in
             direction = self.creatures[i].findPath()
             #makes the creature move in that direction
-            self.creatures[i].moveOneTick(direction,tick_length)
+            self.creatures[i].moveOneTick(direction,self.tick_length)
             # updates the list of positions
             self.positions_of_creatures[i] = self.creatures[i].getLocation()
             #checks if the creature ovelaps with food, and if so, consumes it and then removes it from the list of foods

@@ -157,7 +157,7 @@ class Environment(object):
     pass
 
 class Food(object):
-    def init(self, x_location, y_location, energy):
+    def __init__(self, x_location, y_location, energy):
 
         '''
         Defines a piece of food on the class calling

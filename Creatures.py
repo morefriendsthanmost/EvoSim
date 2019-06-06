@@ -10,7 +10,7 @@ class Creature(object):
     The class to define a creature, its properties and the various things it can do
     '''
 
-    def init(self, x_location, y_location, speed, cycle_energy, radius, sensory_range, environment):
+    def init(self, x_location, y_location, speed, starting_energy, radius, sensory_range, environment):
 
         '''
         Defines a creature on the class calling
@@ -65,6 +65,11 @@ class Creature(object):
         
 
     def findPath(self):
+
+        '''
+        Method in charge of finding the best path for the creature. returns a direction in which to travel
+        '''
+
         i = 0
         relevant_objects = self.getSensoryData()
         while not isinstance(relevant_objects[i][0],Environment.Food): #ticks through until the first peice of food is found
@@ -86,9 +91,6 @@ class Creature(object):
         defines how the creature deals with a tick
         '''
 
-        #do sensory stuff
-        #do movement
-        #metabolism
         self.current_energy += -(0.007*self.sensory_range*self.volume)
 
 def getDirection(vec):

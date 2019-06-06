@@ -74,7 +74,7 @@ class Environment(object):
         creatures = []
         for i in range (number_of_creatures):
             x, y, speed, radius, sensory_range = generateCreatureVariables (100)
-            creaturs.append(crt.Creature(x, y, speed, 250, radius, sensory_range, self))
+            creatures.append(crt.Creature(x, y, speed, 250, radius, sensory_range, self))
         self.creatures = creatures
         
         #will get the position of each creature

@@ -30,3 +30,4 @@ for i in range (100):
     plt.draw()
     
     plt.pause(0.5)
+plt.show()

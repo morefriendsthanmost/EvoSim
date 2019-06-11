@@ -65,7 +65,7 @@ class Creature(object):
         return relevant_objects
         
 
-    def findPath(self):
+    def findPath(self,tick_length):
 
         '''
         Method in charge of finding the best path for the creature. returns a direction in which to travel

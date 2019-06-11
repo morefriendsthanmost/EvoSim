@@ -4,10 +4,15 @@ import numpy as np
 import copy as copy
 
 def generateRandomNumberWithLowerLimit (mean, sigma, lower_limit):
+    '''
+    Generates a random number based on a gaussian destribution, adding a lower limit to what that number can be
+    '''
     x = np.random.normal(mean, sigma)
+
     while (x < lower_limit):
         x = np.random.normal(mean, sigma)
     return x
+
 
 def generateFoodVariables (length_of_map, mean_energy = 1.0):
     '''
@@ -77,11 +82,14 @@ class Environment(object):
             creatures.append(crt.Creature(x, y, speed, 250, radius, sensory_range, self))
         self.creatures = creatures
         
-        #will get the position of each creature
+        #will get the position and size of each creature
         positions_of_creatures = []
+        radii_of_creatures     = []
         for i in range (len(creatures)):
             positions_of_creatures.append(creatures[i].getLocation())
+            radii_of_creatures    .append(creatures[i].radius)
         self.positions_of_creatures = positions_of_creatures
+        self.radii_of_creatures     = radii_of_creatures
 
         foods = []
         for i in range (number_of_foods):
@@ -91,18 +99,22 @@ class Environment(object):
 
         #will get the position of each piece of food
         positions_of_foods = []
+        radii_of_foods     = []
         for i in range (len(foods)):
             positions_of_foods.append(foods[i].getLocation())
+            radii_of_foods    .append(foods[i].radius)
         self.positions_of_foods = positions_of_foods
+        self.radii_of_foods     = radii_of_foods
         
-        self.creatures_over_time = [creatures]
-        self.foods_over_time     = [foods]
+        self.radii_of_creatures_over_time = [radii_of_creatures]
+        self.radii_of_foods_over_time     = [radii_of_foods]
 
-        #self.creature_positions_over_time = [positions_of_creatures]
-        #self.food_positions_over_time     = [positions_of_foods]    
+        self.creature_positions_over_time = [positions_of_creatures]
+        self.food_positions_over_time     = [positions_of_foods]    
 
         #####Define tick_length, to change when we know more about it#####
         self.tick_length = tick_length
+
 
 
     def getObjects(self):
@@ -131,31 +143,46 @@ class Environment(object):
         #goes through each of the creatures
         for i in range (len(self.creatures)):
             #gets the direction it will move in
-            direction = self.creatures[i].findPath()
+            direction = self.creatures[i].findPath(self.tick_length)
             #makes the creature move in that direction
             self.creatures[i].moveOneTick(direction,self.tick_length)
             # updates the list of positions
             self.positions_of_creatures[i] = self.creatures[i].getLocation()
             #checks if the creature ovelaps with food, and if so, consumes it and then removes it from the list of foods
+            foods_eaten = []
             for j in range (len(self.foods)):
                 distance = getDistance(self.positions_of_foods[j],self.positions_of_creatures[i])
                 if (distance < (self.creatures[i].radius+self.foods[j].radius)):
-                    self.creatures[i].eatFood(foods[i].energy)
-                    del self.foods[j]
-                    del self.positions_of_foods[j]
+                    self.creatures[i].eatFood(self.foods[i].energy)
+                    foods_eaten.append(j)
+            for k in range (len(foods_eaten)):
+                #deletes the foods that were eaten(the -k is there so that after the first food is deleted, the next one deleted is not affected by the change in numbering in the whole thing
+                del self.foods[foods_eaten[k]-k]
+                del self.positions_of_foods[foods_eaten[k]-k]
+
+
+        radii_of_foods= []
+        for i in range (len(self.foods)):
+            radii_of_foods.append(self.foods[i].radius)
+        self.radii_of_foods= radii_of_foods
+
+        radii_of_creatures= []
+        for i in range (len(self.creatures)):
+            radii_of_creatures.append(self.creatures[i].radius)
+        self.radii_of_creatures= radii_of_creatures
         
-        self.creatures_over_time.append(copy.deepcopy(self.creatures))
-        #self.creature_positions_over_time.append(copy.deepcopy(self.positions_of_creatures))
-        #self.food_positions_over_time.append(copy.deepcopy(self.positions_of_foods))
-        self.foods_over_time.append(copy.deepcopy(self.foods))
+        self.radii_of_creatures_over_time.append(copy.deepcopy(self.radii_of_creatures))
+        self.creature_positions_over_time.append(copy.deepcopy(self.positions_of_creatures))
+
+        self.food_positions_over_time    .append(copy.deepcopy(self.positions_of_foods))
+        self.radii_of_foods_over_time    .append(copy.deepcopy(self.radii_of_foods))
         pass
 
     def getAnimationData (self):
         '''
         returns 4 lists, one that contains all the lists of creatures after each tick, one all the lists of creature positions after each tick, one all the lists of food after each tick, and one all the lists of food positions over each tick
         '''
-        #return (self.creatures_over_time, self.creature_positions_over_time, self.foods_over_time, self.food_positions_over_time)
-        return (self.creatures_over_time, self.foods_over_time)
+        return (self.radii_of_creatures_over_time, self.creature_positions_over_time, self.radii_of_foods_over_time, self.food_positions_over_time)
     pass
 
 class Food(object):
@@ -184,5 +211,9 @@ class Food(object):
 def runCycle(number_of_creatures, number_of_foods, number_of_ticks):
     environment = Environment(number_of_creatures, number_of_foods)
     for i in range (number_of_ticks):
+        print(i)
         environment.tick()
+        print(i)
+        if (40==i):
+            pass
     return (environment.getAnimationData())

@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 #for the test, let's create 6 pieces of food and one creature
 radii_of_creatures_over_time, creature_positions_over_time, radii_of_foods_over_time, food_positions_over_time = env.runCycle(1, 6, 100)
 
-for i in range (100):
+for i in range (99):
     #get the xs and the ys
     creatures_x_positions = []
     creatures_y_positions = []
@@ -23,11 +23,14 @@ for i in range (100):
         foods_x_positions.append(food_positions_over_time[i][j][0])
         foods_y_positions.append(food_positions_over_time[i][j][1])
         foods_map_size   .append(pow((2*radii_of_foods_over_time[i][j]),2))
+    plt.clf()
+    plt.xlim(-50, 50)
+    plt.ylim(-50, 50)
 
-    plt.plot(creatures_x_positions, creatures_y_positions, color= "red", marker = "o", markersize = creatures_map_size, linestyle = "None")
-    plt.plot(foods_x_positions, foods_y_positions, color= "green", marker = "o", markersize = foods_map_size, linestyle = "None")
-
+    plt.scatter(creatures_x_positions, creatures_y_positions, color= "red", marker = "o", s = creatures_map_size, linestyle = "None")
+    plt.scatter(foods_x_positions, foods_y_positions, color= "green", marker = "o", s = foods_map_size, linestyle = "None")
+    
     plt.draw()
     
-    plt.pause(0.1)
+    plt.pause(0.05)
 plt.show()

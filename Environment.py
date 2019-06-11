@@ -106,11 +106,11 @@ class Environment(object):
         self.positions_of_foods = positions_of_foods
         self.radii_of_foods     = radii_of_foods
         
-        self.radii_of_creatures_over_time = [radii_of_creatures]
-        self.radii_of_foods_over_time     = [radii_of_foods]
+        self.radii_of_creatures_over_time = [copy.deepcopy(radii_of_creatures)]
+        self.radii_of_foods_over_time     = [copy.deepcopy(radii_of_foods)]
 
-        self.creature_positions_over_time = [positions_of_creatures]
-        self.food_positions_over_time     = [positions_of_foods]    
+        self.creature_positions_over_time = [copy.deepcopy(positions_of_creatures)]
+        self.food_positions_over_time     = [copy.deepcopy(positions_of_foods)]    
 
         #####Define tick_length, to change when we know more about it#####
         self.tick_length = tick_length

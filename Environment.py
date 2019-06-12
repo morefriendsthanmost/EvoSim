@@ -14,7 +14,7 @@ def generateRandomNumberWithLowerLimit (mean, sigma, lower_limit):
     return x
 
 
-def generateFoodVariables (length_of_map, mean_energy = 1.0):
+def generateFoodVariables (length_of_map, mean_energy = 400.0):
     '''
     Takes the length of the map from side to side and generates a random position, with higher chance of it being near the centre
     '''
@@ -29,7 +29,7 @@ def generateFoodVariables (length_of_map, mean_energy = 1.0):
 
     return x,y,energy
 
-def generateCreatureVariables (length_of_map, mean_speed = 1.0, mean_radius = 1.5, mean_sensory_range = 40):
+def generateCreatureVariables (length_of_map, mean_speed = 1.0, mean_radius = 2, mean_sensory_range = 40):
     '''
     Takes the length of the map from side to side and generates all the random variables needed for a creature to work. the result cannot be passed directly to the creature init function since it lacks environment
     '''
@@ -58,7 +58,7 @@ def generateCreatureVariables (length_of_map, mean_speed = 1.0, mean_radius = 1.
 
 
     speed         = generateRandomNumberWithLowerLimit (mean_speed, 0.3, 0.1)
-    radius        = generateRandomNumberWithLowerLimit (mean_radius, 0.2, 0.1)
+    radius        = generateRandomNumberWithLowerLimit (mean_radius, 0.3, 0.1)
     sensory_range = generateRandomNumberWithLowerLimit (mean_sensory_range, 5, 0.1)
     return  x, y, speed, radius, sensory_range
 
@@ -195,7 +195,7 @@ class Food(object):
         self.energy     = energy
         self.x_location = x_location
         self.y_location = y_location
-        self.radius     = pow((energy/420000),(1/3))
+        self.radius     = 4*pow((energy/420000),(1/3))
 
 
     def getLocation(self):

@@ -116,6 +116,12 @@ class Environment(object):
         self.tick_length = tick_length
 
 
+    def generateNewFoods (self, number_of_foods):
+        foods = []
+        for i in range (number_of_foods):
+            food_x_location, food_y_location, food_energy = generateFoodVariables (100)
+            foods.append(Food(food_x_location, food_y_location, food_energy))
+        self.foods = foods
 
     def getObjects(self):
 

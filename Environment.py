@@ -218,6 +218,27 @@ def runCycle(number_of_creatures, number_of_foods, number_of_ticks):
         print(i)
         environment.tick()
         print(i)
-        if (40==i):
-            pass
     return (environment.getAnimationData())
+
+def afterCycle (environment, number_of_foods):
+
+    #generate new foods
+    environment.generateNewFoods(number_of_foods)
+    #cycle through all creatures
+    while (i<(len(environment.creatures))):
+        if (500 < environment.creatures[i].energy):
+            #dupliacte ones that have lots of energy
+            i += 1
+        elif (0 > environment.creatures[i].energy):
+            #remove ones with not that much
+            del environment.creatures[i]
+            del environment.positions_of_creatures[i]
+            del environment.radii_of_creatures[i]
+        if (abs(environment.creature[i].x_location)):
+            pass
+
+
+    environment.radii_of_creatures_over_time = [copy.deepcopy(radii_of_creatures)]
+    environment.radii_of_foods_over_time     = [copy.deepcopy(radii_of_foods)]
+    environment.creature_positions_over_time = [copy.deepcopy(positions_of_creatures)]
+    environment.food_positions_over_time     = [copy.deepcopy(positions_of_foods)]   

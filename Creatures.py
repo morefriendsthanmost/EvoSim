@@ -98,4 +98,4 @@ class Creature(object):
         self.current_energy += -(0.007*self.sensory_range*self.volume)
 
 def getDirection(vec):
-    return math.acos(vec[0]/pow(pow(vec[0],2) + pow(vec[1],2),1/2))
+    return math.atan2(vec[1],vec[0])

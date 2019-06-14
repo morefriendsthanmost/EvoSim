@@ -2,6 +2,7 @@
 import Creatures as crt
 import numpy as np
 import copy as copy
+import math as maths
 
 def generateRandomNumberWithLowerLimit (mean, sigma, lower_limit):
     '''
@@ -29,7 +30,7 @@ def generateFoodVariables (length_of_map, mean_energy = 400.0):
 
     return x,y,energy
 
-def generateCreatureVariables (length_of_map, mean_speed = 1.0, mean_radius = 2, mean_sensory_range = 40):
+def generateCreatureVariables (length_of_map, mean_speed = 1.0, mean_radius = 1.0, mean_sensory_range = 40):
     '''
     Takes the length of the map from side to side and generates all the random variables needed for a creature to work. the result cannot be passed directly to the creature init function since it lacks environment
     '''
@@ -70,7 +71,7 @@ def getDistance(position_one, position_two):
 
 
 class Environment(object):
-    def __init__(self, number_of_creatures, number_of_foods, tick_length = 1):
+    def __init__(self, number_of_creatures, number_of_foods, tick_length = 1, number_of_ticks = 100):
 
         '''
         Defines the enviroment on the class calling
@@ -79,7 +80,7 @@ class Environment(object):
         creatures = []
         for i in range (number_of_creatures):
             x, y, speed, radius, sensory_range = generateCreatureVariables (100)
-            creatures.append(crt.Creature(x, y, speed, 250, radius, sensory_range, self))
+            creatures.append(crt.Creature(x, y, speed, 500, radius, sensory_range, self))
         self.creatures = creatures
         
         #will get the position and size of each creature
@@ -114,7 +115,7 @@ class Environment(object):
 
         #####Define tick_length, to change when we know more about it#####
         self.tick_length = tick_length
-
+        self.number_of_ticks = number_of_ticks
 
     def generateNewFoods (self, number_of_foods):
         foods = []
@@ -187,7 +188,55 @@ class Environment(object):
         returns 4 lists, one that contains all the lists of creatures after each tick, one all the lists of creature positions after each tick, one all the lists of food after each tick, and one all the lists of food positions over each tick
         '''
         return (self.radii_of_creatures_over_time, self.creature_positions_over_time, self.radii_of_foods_over_time, self.food_positions_over_time)
+
+
+    def runCycle(self):
+        for i in range (self.number_of_ticks):
+            self.tick()
+            print("{0}th tick done. {1}% complete".format(i,int((i/self.number_of_ticks)*100)))
+        return (self.getAnimationData())
     pass
+
+    def afterCycle (self):
+        #generate new foods
+        self.generateNewFoods(number_of_foods)
+        
+        creatures_to_split = []
+        #cycle through all creatures
+        i = 0
+        while (i<(len(self.creatures))):
+            if (48 > abs(self.creature[i].x_location)) and (48 > abs(self.creature[i].y_location)):
+                #do something to simulate not safeness
+                del self.creatures[i]
+                del self.positions_of_creatures[i]
+                del self.radii_of_creatures[i]
+                pass
+            else:
+                i += 1
+        i = 0
+        while (i<(len(self.creatures))):
+            if (0 >= self.creatures[i].energy):
+                #remove ones with not that much
+                del self.creatures[i]
+                del self.positions_of_creatures[i]
+                del self.radii_of_creatures[i]
+            else:
+                i += 1
+        for i in range(len(self.creatures)):
+            reproduction_chance = 200*maths.atan(self.creatures[i].current_energy/800)/maths.pi
+            if np.random.uniform(0,100) <= reproduction_chance:
+                #makesomebabies.exe in new list
+                #mark creatures
+                creatures_to_split.extend(i)
+        
+        while (i < (len(self.creatures_to_split))):
+            #delete old parents
+            #old list extend new list
+            pass
+        self.radii_of_creatures_over_time = [copy.deepcopy(radii_of_creatures)]
+        self.radii_of_foods_over_time     = [copy.deepcopy(radii_of_foods)]
+        self.creature_positions_over_time = [copy.deepcopy(positions_of_creatures)]
+        self.food_positions_over_time     = [copy.deepcopy(positions_of_foods)] 
 
 class Food(object):
     def __init__(self, x_location, y_location, energy):
@@ -212,33 +261,5 @@ class Food(object):
     pass
 
 
-def runCycle(number_of_creatures, number_of_foods, number_of_ticks):
-    environment = Environment(number_of_creatures, number_of_foods)
-    for i in range (number_of_ticks):
-        print(i)
-        environment.tick()
-        print(i)
-    return (environment.getAnimationData())
 
-def afterCycle (environment, number_of_foods):
-
-    #generate new foods
-    environment.generateNewFoods(number_of_foods)
-    #cycle through all creatures
-    while (i<(len(environment.creatures))):
-        if (500 < environment.creatures[i].energy):
-            #dupliacte ones that have lots of energy
-            i += 1
-        elif (0 > environment.creatures[i].energy):
-            #remove ones with not that much
-            del environment.creatures[i]
-            del environment.positions_of_creatures[i]
-            del environment.radii_of_creatures[i]
-        if (abs(environment.creature[i].x_location)):
-            pass
-
-
-    environment.radii_of_creatures_over_time = [copy.deepcopy(radii_of_creatures)]
-    environment.radii_of_foods_over_time     = [copy.deepcopy(radii_of_foods)]
-    environment.creature_positions_over_time = [copy.deepcopy(positions_of_creatures)]
-    environment.food_positions_over_time     = [copy.deepcopy(positions_of_foods)]   
+  

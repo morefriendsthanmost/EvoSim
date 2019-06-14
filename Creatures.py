@@ -36,9 +36,11 @@ class Creature(object):
         Moves the creature for a distance defined by 'self.speed' * 'tick_length' in direction 'direction', a radian value from the positive x axis in a counter-clockwise direction (as is the standard in maths), then subtracts the distance moved from energy required to make this manuever from the current energy
         '''
 
-        self.x_location += (self.speed * tick_length * math.cos(direction))
-        self.y_location += (self.speed * tick_length * math.sin(direction))
-        self.current_energy += -(self.volume * self.speed / tick_length) # based off of mv^2/2 - except wanted it to be per unit distance, so then divide by distance, which becomes mv^2/2*v*t, which is mv/2t. Very much up to debate.
+        self.current_energy += -(0.007*self.sensory_range*self.volume)
+        if self.current_energy + -(self.volume * self.speed / tick_length) > 0:
+            self.x_location += (self.speed * tick_length * math.cos(direction))
+            self.y_location += (self.speed * tick_length * math.sin(direction))
+            self.current_energy += -(self.volume * self.speed / tick_length) # based off of mv^2/2 - except wanted it to be per unit distance, so then divide by distance, which becomes mv^2/2*v*t, which is mv/2t. Very much up to debate.
 
     def eatFood(self, food_energy):
         
@@ -88,14 +90,6 @@ class Creature(object):
         '''
 
         return (self.x_location, self.y_location)
-
-    def runTick(self,tick_length):
-        
-        '''
-        defines how the creature deals with a tick
-        '''
-
-        self.current_energy += -(0.007*self.sensory_range*self.volume)
 
 def getDirection(vec):
     return math.atan2(vec[1],vec[0])

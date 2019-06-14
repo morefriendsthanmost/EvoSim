@@ -125,13 +125,11 @@ class Environment(object):
         all_objects = []
         for i in range (len(self.creatures)):
             temp = []
-            temp.append(self.creatures[i])
-            temp.append(self.creatures[i].getLocation())
+            temp.extend([self.creatures[i],self.creatures[i].getLocation()])
             all_objects.append(temp)  
         for i in range (len(self.foods)):
             temp = []
-            temp.append(self.foods[i])
-            temp.append(self.foods[i].getLocation())
+            temp.extend([self.foods[i],self.foods[i].getLocation()])
             all_objects.append(temp)   
         return (all_objects)
 

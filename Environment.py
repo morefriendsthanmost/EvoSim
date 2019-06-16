@@ -216,12 +216,7 @@ class Environment(object):
         for i in range(len(self.creatures)):
             if (48 > abs(self.creature[i].x_location)) and (48 > abs(self.creature[i].y_location)):
                 #do something to simulate not safeness
-                del self.creatures[i]
-                del self.positions_of_creatures[i]
-                del self.radii_of_creatures[i]
-                pass
-            else:
-                i += 1
+                self.creatures[i].energy += -400/radii_of_creatures[i]
         i = 0
         while (i<(len(self.creatures))):
             if (0 >= self.creatures[i].energy):

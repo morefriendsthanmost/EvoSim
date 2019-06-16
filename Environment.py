@@ -213,7 +213,7 @@ class Environment(object):
         creatures_to_split = []
         #cycle through all creatures
         i = 0
-        while (i<(len(self.creatures))):
+        for i in range(len(self.creatures)):
             if (48 > abs(self.creature[i].x_location)) and (48 > abs(self.creature[i].y_location)):
                 #do something to simulate not safeness
                 del self.creatures[i]

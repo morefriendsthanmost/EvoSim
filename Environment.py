@@ -30,38 +30,46 @@ def generateFoodVariables (length_of_map, mean_energy = 400.0):
 
     return x,y,energy
 
-def generateCreatureVariables (length_of_map, mean_speed = 1.0, mean_radius = 1.0, mean_sensory_range = 40):
+def generateCreatureVariables (length_of_map, mean_speed = 1.0, mean_radius = 1.0, mean_sensory_range = 40, baby = False):
     '''
     Takes the length of the map from side to side and generates all the random variables needed for a creature to work. the result cannot be passed directly to the creature init function since it lacks environment
     '''
     #chooses a random part of the borders to spawn the creatures in
-    border = np.random.choice([1, 2, 3, 4])  
-    if (1 == border):
-        y = -50
-        x = np.random.normal(0.0, 15)
-        while (abs(x) > length_of_map/2):
+    if not baby:
+        border = np.random.choice([1, 2, 3, 4])  
+        if (1 == border):
+            y = -50
             x = np.random.normal(0.0, 15)
-    elif (2 == border):
-        x = -50
-        y = np.random.normal(0.0, 15)
-        while (abs(y) > length_of_map/2):
+            while (abs(x) > length_of_map/2):
+                x = np.random.normal(0.0, 15)
+        elif (2 == border):
+            x = -50
             y = np.random.normal(0.0, 15)
-    elif (3 == border):
-        y = 50
-        x = np.random.normal(0.0, 15)
-        while (abs(x) > length_of_map/2):
+            while (abs(y) > length_of_map/2):
+                y = np.random.normal(0.0, 15)
+        elif (3 == border):
+            y = 50
             x = np.random.normal(0.0, 15)
-    elif (4 == border):
-        x = 50
-        y = np.random.normal(0.0, 15)
-        while (abs(y) > length_of_map/2):
+            while (abs(x) > length_of_map/2):
+                x = np.random.normal(0.0, 15)
+        elif (4 == border):
+            x = 50
             y = np.random.normal(0.0, 15)
+            while (abs(y) > length_of_map/2):
+                y = np.random.normal(0.0, 15)
 
+    if baby:
+        standard_deviation = 0.2
+    else:
+        standard_deviation = 0.1
 
-    speed         = generateRandomNumberWithLowerLimit (mean_speed, 0.3, 0.1)
-    radius        = generateRandomNumberWithLowerLimit (mean_radius, 0.3, 0.1)
-    sensory_range = generateRandomNumberWithLowerLimit (mean_sensory_range, 5, 0.1)
-    return  x, y, speed, radius, sensory_range
+    speed         = generateRandomNumberWithLowerLimit (mean_speed, 0.3, standard_deviation)
+    radius        = generateRandomNumberWithLowerLimit (mean_radius, 0.3, standard_deviation)
+    sensory_range = generateRandomNumberWithLowerLimit (mean_sensory_range, 5, standard_deviation)
+    if baby:
+        return speed, radius, sensory_range
+    else:
+        return  x, y, speed, radius, sensory_range
 
 def getDistance(position_one, position_two):
     '''
@@ -164,6 +172,7 @@ class Environment(object):
                 #deletes the foods that were eaten(the -k is there so that after the first food is deleted, the next one deleted is not affected by the change in numbering in the whole thing
                 del self.foods[foods_eaten[k]-k]
                 del self.positions_of_foods[foods_eaten[k]-k]
+                del self.radii_of_foods[foods_eaten[k]-k]
 
 
         radii_of_foods= []
@@ -222,17 +231,24 @@ class Environment(object):
                 del self.radii_of_creatures[i]
             else:
                 i += 1
+        new_creatures = []
         for i in range(len(self.creatures)):
             reproduction_chance = 200*maths.atan(self.creatures[i].current_energy/800)/maths.pi
             if np.random.uniform(0,100) <= reproduction_chance:
                 #makesomebabies.exe in new list
+                speed, radius, sensory_range = generateCreatureVariables (100, baby = True)
+                new_creatures.append(crt.Creature(self.creatures[i].x_location, self.creatures[i].y_location, speed, self.creatures[i].energy/2, radius, sensory_range, self))
                 #mark creatures
                 creatures_to_split.extend(i)
         
-        while (i < (len(self.creatures_to_split))):
-            #delete old parents
-            #old list extend new list
+        for i in range(len(creatures_to_split)):
+            del self.creatures[creatures_to_split[i]-i]
+            del self.positions_of_creatures[creatures_to_split[i]-i]
+            del self.radii_of_creatures[creatures_to_split[i]-i]
             pass
+        #old list extend new list
+        self.creatures.extend(new_creatures)
+
         self.radii_of_creatures_over_time = [copy.deepcopy(radii_of_creatures)]
         self.radii_of_foods_over_time     = [copy.deepcopy(radii_of_foods)]
         self.creature_positions_over_time = [copy.deepcopy(positions_of_creatures)]

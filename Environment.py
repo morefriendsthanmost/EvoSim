@@ -124,6 +124,7 @@ class Environment(object):
         #####Define tick_length, to change when we know more about it#####
         self.tick_length = tick_length
         self.number_of_ticks = number_of_ticks
+        self.number_of_foods = number_of_foods
 
     def generateNewFoods (self, number_of_foods):
         foods = []
@@ -131,6 +132,14 @@ class Environment(object):
             food_x_location, food_y_location, food_energy = generateFoodVariables (100)
             foods.append(Food(food_x_location, food_y_location, food_energy))
         self.foods = foods
+
+        positions_of_foods = []
+        radii_of_foods     = []
+        for i in range (len(foods)):
+            positions_of_foods.append(foods[i].getLocation())
+            radii_of_foods    .append(foods[i].radius)
+        self.positions_of_foods = positions_of_foods
+        self.radii_of_foods     = radii_of_foods
 
     def getObjects(self):
 
@@ -198,28 +207,26 @@ class Environment(object):
         '''
         return (self.radii_of_creatures_over_time, self.creature_positions_over_time, self.radii_of_foods_over_time, self.food_positions_over_time)
 
-
     def runCycle(self):
         for i in range (self.number_of_ticks):
             self.tick()
             print("{0}th tick done. {1}% complete".format(i,int((i/self.number_of_ticks)*100)))
         return (self.getAnimationData())
-    pass
 
     def afterCycle (self):
         #generate new foods
-        self.generateNewFoods(number_of_foods)
+        self.generateNewFoods(self.number_of_foods)
         
         creatures_to_split = []
         #cycle through all creatures
         i = 0
         for i in range(len(self.creatures)):
-            if (48 > abs(self.creature[i].x_location)) and (48 > abs(self.creature[i].y_location)):
+            if (48 > abs(self.creatures[i].x_location)) and (48 > abs(self.creatures[i].y_location)):
                 #do something to simulate not safeness
-                self.creatures[i].energy += -400/radii_of_creatures[i]
+                self.creatures[i].current_energy += -400/self.radii_of_creatures[i]
         i = 0
         while (i<(len(self.creatures))):
-            if (0 >= self.creatures[i].energy):
+            if (0 >= self.creatures[i].current_energy):
                 #remove ones with not that much
                 del self.creatures[i]
                 del self.positions_of_creatures[i]
@@ -231,10 +238,11 @@ class Environment(object):
             reproduction_chance = 200*maths.atan(self.creatures[i].current_energy/800)/maths.pi
             if np.random.uniform(0,100) <= reproduction_chance:
                 #makesomebabies.exe in new list
-                speed, radius, sensory_range = generateCreatureVariables (100, baby = True)
-                new_creatures.append(crt.Creature(self.creatures[i].x_location, self.creatures[i].y_location, speed, self.creatures[i].energy/2, radius, sensory_range, self))
+                for j in range (2):
+                    speed, radius, sensory_range = generateCreatureVariables (100, baby = True)
+                    new_creatures.append(crt.Creature(self.creatures[i].x_location+2*pow(-1,j), self.creatures[i].y_location+2*pow(-1,j), speed, self.creatures[i].current_energy/2, radius, sensory_range, self))
                 #mark creatures
-                creatures_to_split.extend(i)
+                creatures_to_split.append(i)
         
         for i in range(len(creatures_to_split)):
             del self.creatures[creatures_to_split[i]-i]
@@ -242,12 +250,18 @@ class Environment(object):
             del self.radii_of_creatures[creatures_to_split[i]-i]
             pass
         #old list extend new list
+        for i in range (len(new_creatures)):
+            self.positions_of_creatures.append(new_creatures[i].getLocation())
+            self.radii_of_creatures    .append(new_creatures[i].radius)
+
         self.creatures.extend(new_creatures)
 
-        self.radii_of_creatures_over_time = [copy.deepcopy(radii_of_creatures)]
-        self.radii_of_foods_over_time     = [copy.deepcopy(radii_of_foods)]
-        self.creature_positions_over_time = [copy.deepcopy(positions_of_creatures)]
-        self.food_positions_over_time     = [copy.deepcopy(positions_of_foods)] 
+        self.radii_of_creatures_over_time = [copy.deepcopy(self.radii_of_creatures)]
+        self.radii_of_foods_over_time     = [copy.deepcopy(self.radii_of_foods)]
+        self.creature_positions_over_time = [copy.deepcopy(self.positions_of_creatures)]
+        self.food_positions_over_time     = [copy.deepcopy(self.positions_of_foods)] 
+
+
 
 class Food(object):
     def __init__(self, x_location, y_location, energy):

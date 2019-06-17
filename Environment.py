@@ -125,6 +125,7 @@ class Environment(object):
         self.tick_length = tick_length
         self.number_of_ticks = number_of_ticks
         self.number_of_foods = number_of_foods
+        self.current_tick = 0
 
     def generateNewFoods (self, number_of_foods):
         foods = []
@@ -199,6 +200,8 @@ class Environment(object):
 
         self.food_positions_over_time    .append(copy.deepcopy(self.positions_of_foods))
         self.radii_of_foods_over_time    .append(copy.deepcopy(self.radii_of_foods))
+
+        self.current_tick += 1
         pass
 
     def getAnimationData (self):

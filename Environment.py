@@ -176,7 +176,7 @@ class Environment(object):
             for j in range (len(self.foods)):
                 distance = getDistance(self.positions_of_foods[j],self.positions_of_creatures[i])
                 if (distance < (self.creatures[i].radius+self.foods[j].radius)):
-                    self.creatures[i].eatFood(self.foods[i].energy)
+                    self.creatures[i].eatFood(self.foods[j].energy)
                     foods_eaten.append(j)
             for k in range (len(foods_eaten)):
                 #deletes the foods that were eaten(the -k is there so that after the first food is deleted, the next one deleted is not affected by the change in numbering in the whole thing

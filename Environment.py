@@ -100,26 +100,15 @@ class Environment(object):
         self.positions_of_creatures = positions_of_creatures
         self.radii_of_creatures     = radii_of_creatures
 
-        foods = []
-        for i in range (number_of_foods):
-            food_x_location, food_y_location, food_energy = generateFoodVariables (100)
-            foods.append(Food(food_x_location, food_y_location, food_energy))
-        self.foods = foods
-
-        #will get the position of each piece of food
-        positions_of_foods = []
-        radii_of_foods     = []
-        for i in range (len(foods)):
-            positions_of_foods.append(foods[i].getLocation())
-            radii_of_foods    .append(foods[i].radius)
-        self.positions_of_foods = positions_of_foods
-        self.radii_of_foods     = radii_of_foods
+        self.generateNewFoods
         
         self.radii_of_creatures_over_time = [copy.deepcopy(radii_of_creatures)]
         self.radii_of_foods_over_time     = [copy.deepcopy(radii_of_foods)]
 
         self.creature_positions_over_time = [copy.deepcopy(positions_of_creatures)]
-        self.food_positions_over_time     = [copy.deepcopy(positions_of_foods)]    
+        self.food_positions_over_time     = [copy.deepcopy(positions_of_foods)]  
+        
+        self.averages_over_cycles = [copy.deepcopy(self.getAverages())]
 
         #####Define tick_length, to change when we know more about it#####
         self.tick_length = tick_length
@@ -263,6 +252,8 @@ class Environment(object):
         self.radii_of_foods_over_time     = [copy.deepcopy(self.radii_of_foods)]
         self.creature_positions_over_time = [copy.deepcopy(self.positions_of_creatures)]
         self.food_positions_over_time     = [copy.deepcopy(self.positions_of_foods)] 
+
+        self.averages_over_cycles.append(self.getAverages())
     
     def  getAverages (self):
         '''

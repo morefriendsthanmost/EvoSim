@@ -263,7 +263,25 @@ class Environment(object):
         self.radii_of_foods_over_time     = [copy.deepcopy(self.radii_of_foods)]
         self.creature_positions_over_time = [copy.deepcopy(self.positions_of_creatures)]
         self.food_positions_over_time     = [copy.deepcopy(self.positions_of_foods)] 
+    
+    def  getAverages (self):
+        '''
+        returns the average speed, radius, and sensory range of all creatures curently in the environment
+        '''
+        sum_of_creature_speeds         = 0
+        sum_of_creature_radii          = 0
+        sum_of_creature_sensory_ranges = 0
+        
+        for i in range (len(self.creatures)):
+            sum_of_creature_speeds         += self.creatures[i].speed
+            sum_of_creature_radii          += self.creatures[i].radius
+            sum_of_creature_sensory_ranges += self.creatures[i].sensory_range
+        
+        average_speed         = sum_of_creature_speeds        /len(self.creatures)
+        average_radius        = sum_of_creature_radii         /len(self.creatures)
+        average_sensory_range = sum_of_creature_sensory_ranges/len(self.creatures)
 
+        return average_speed,average_radius,average_sensory_range
 
 
 class Food(object):

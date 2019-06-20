@@ -72,7 +72,7 @@ class Creature(object):
         '''
         Method in charge of finding the best path for the creature. returns a direction in which to travel
         '''
-        if self.getDistanceToSafeZone()[1]/(self.environment.number_of_ticks - self.environment.current_tick) <= self.speed:
+        if self.getDistanceToSafeZone()[1]/(self.environment.number_of_ticks - self.environment.current_tick + 1) < self.speed:
             relevant_objects = self.getSensoryData()
             try:
                 i = 0

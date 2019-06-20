@@ -35,12 +35,12 @@ class Creature(object):
         '''
         Moves the creature for a distance defined by 'self.speed' * 'tick_length' in direction 'direction', a radian value from the positive x axis in a counter-clockwise direction (as is the standard in maths), then subtracts the distance moved from energy required to make this manuever from the current energy
         '''
-
+        if direction != None:
+            if self.current_energy + -(self.volume * self.speed / tick_length) > 0:
+                self.x_location += (self.speed * tick_length * math.cos(direction))
+                self.y_location += (self.speed * tick_length * math.sin(direction))
+                self.current_energy += -(self.volume * self.speed / tick_length) # based off of mv^2/2 - except wanted it to be per unit distance, so then divide by distance, which becomes mv^2/2*v*t, which is mv/2t. Very much up to debate.
         self.current_energy += -(0.007*self.sensory_range*self.volume)
-        if self.current_energy + -(self.volume * self.speed / tick_length) > 0:
-            self.x_location += (self.speed * tick_length * math.cos(direction))
-            self.y_location += (self.speed * tick_length * math.sin(direction))
-            self.current_energy += -(self.volume * self.speed / tick_length) # based off of mv^2/2 - except wanted it to be per unit distance, so then divide by distance, which becomes mv^2/2*v*t, which is mv/2t. Very much up to debate.
 
     def eatFood(self, food_energy):
         
@@ -72,29 +72,33 @@ class Creature(object):
         '''
         Method in charge of finding the best path for the creature. returns a direction in which to travel
         '''
-
-        relevant_objects = self.getSensoryData()
-        try:
-            i = 0
-            while not isinstance(relevant_objects[i][0],env.Food): #ticks through until the first peice of food is found
-                i += 1
-            self.target = [relevant_objects[i][0],relevant_objects[i][0].getLocation()]
-            return getDirection((relevant_objects[i][1][0]-self.x_location,relevant_objects[i][1][1]-self.y_location))
-        except: #gotta find out what to do in a situation where there is no food in range - running under the assumption that in an area where there are cretures there will not be food, so moving away from the nearest creature
+        if self.getDistanceToSafeZone()[1]/(self.environment.number_of_ticks - self.environment.current_tick) <= self.speed:
+            relevant_objects = self.getSensoryData()
             try:
                 i = 0
-                while not isinstance(relevant_objects[i][0],Creature):
+                while not isinstance(relevant_objects[i][0],env.Food): #ticks through until the first peice of food is found
                     i += 1
                 self.target = [relevant_objects[i][0],relevant_objects[i][0].getLocation()]
-                return getDirection((self.x_location-relevant_objects[i][1][0],self.y_location-relevant_objects[i][1][1]))
-            except:
-                self.target = ["center",(0,0)]
-                return getDirection((-self.x_location,-self.y_location))
-
-
-        
-        
-
+                return getDirection((relevant_objects[i][1][0]-self.x_location,relevant_objects[i][1][1]-self.y_location))
+            except: #gotta find out what to do in a situation where there is no food in range - running under the assumption that in an area where there are cretures there will not be food, so moving away from the nearest creature
+                try:
+                    i = 0
+                    while not isinstance(relevant_objects[i][0],Creature):
+                        i += 1
+                    self.target = [relevant_objects[i][0],relevant_objects[i][0].getLocation()]
+                    return getDirection((self.x_location-relevant_objects[i][1][0],self.y_location-relevant_objects[i][1][1]))
+                except:
+                    self.target = ["center",(0,0)]
+                    return getDirection((-self.x_location,-self.y_location))
+        else:
+            direction, distance = self.getDistanceToSafeZone()
+            if direction == "x":
+                return getDirection((self.x_location,0))
+            elif direction == "y":
+                return getDirection((0,self.y_location))
+            else:
+                return None
+            
     def getLocation(self):
 
         '''
@@ -102,6 +106,14 @@ class Creature(object):
         '''
 
         return (self.x_location, self.y_location)
+
+    def getDistanceToSafeZone(self):
+        if abs(self.x_location) > abs(self.y_location) and abs(self.x_location) <= 48:
+            return ("x",48 - abs(self.x_location))
+        elif abs(self.y_location) > abs(self.x_location) and abs(self.y_location) <= 48:
+            return ("y",48 - abs(self.y_location))
+        else:
+            return ("None",0)
 
 def getDirection(vec):
     return math.atan2(vec[1],vec[0])

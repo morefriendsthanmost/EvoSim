@@ -240,7 +240,7 @@ class Environment(object):
             if np.random.uniform(0,100) <= reproduction_chance:
                 #makesomebabies.exe in new list
                 for j in range (2):
-                    speed, radius, sensory_range = generateCreatureVariables (100, baby = True)
+                    speed, radius, sensory_range = generateCreatureVariables (100, mean_speed = self.creatures[i].speed, mean_radius = self.creatures[i].radius, mean_sensory_range = self.creatures[i].sensory_range, baby = True)
                     new_creatures.append(crt.Creature(self.creatures[i].x_location+2*pow(-1,j), self.creatures[i].y_location+2*pow(-1,j), speed, self.creatures[i].current_energy/2, radius, sensory_range, self))
                 #mark creatures
                 creatures_to_split.append(i)

@@ -59,7 +59,7 @@ def generateCreatureVariables (length_of_map, mean_speed = 1.0, mean_radius = 1.
                 y = np.random.normal(0.0, 15)
 
     if baby:
-        standard_deviation = 0.01
+        standard_deviation = 0.05
     else:
         standard_deviation = 0.2
 

@@ -12,7 +12,8 @@ i = 0
 while environment.creatures != []:
     i=i+1
     radii_of_creatures_over_time, creature_positions_over_time, radii_of_foods_over_time, food_positions_over_time = environment.runCycle()
-    #UI.displayCycle(radii_of_creatures_over_time, creature_positions_over_time, radii_of_foods_over_time, food_positions_over_time, 0.01)
+    if 0 == i%10 or 1 == i:
+        UI.displayCycle(radii_of_creatures_over_time, creature_positions_over_time, radii_of_foods_over_time, food_positions_over_time, 0.01)
     environment.afterCycle ()
     if 0 == i%10:
         UI.displayAfterCycle(environment.averages_over_cycles)

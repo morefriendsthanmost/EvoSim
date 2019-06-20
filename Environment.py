@@ -217,7 +217,7 @@ class Environment(object):
         '''
         #generate new foods
         self.generateNewFoods(self.number_of_foods)
-        
+        self.current_tick = 0
         creatures_to_split = []
         #cycle through all creatures
         i = 0

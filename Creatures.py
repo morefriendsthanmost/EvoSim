@@ -73,14 +73,26 @@ class Creature(object):
         Method in charge of finding the best path for the creature. returns a direction in which to travel
         '''
 
-        i = 0
         relevant_objects = self.getSensoryData()
         try:
+            i = 0
             while not isinstance(relevant_objects[i][0],env.Food): #ticks through until the first peice of food is found
                 i += 1
-        except:
-            return getDirection((-self.x_location,-self.y_location)) #moves towards middle if no food can be seen
-        return getDirection((relevant_objects[i][1][0]-self.x_location,relevant_objects[i][1][1]-self.y_location))
+            self.target = [relevant_objects[i][0],relevant_objects[i][0].getLocation()]
+            return getDirection((relevant_objects[i][1][0]-self.x_location,relevant_objects[i][1][1]-self.y_location))
+        except: #gotta find out what to do in a situation where there is no food in range - running under the assumption that in an area where there are cretures there will not be food, so moving away from the nearest creature
+            try:
+                i = 0
+                while not isinstance(relevant_objects[i][0],Creature):
+                    i += 1
+                self.target = [relevant_objects[i][0],relevant_objects[i][0].getLocation()]
+                return getDirection((self.x_location-relevant_objects[i][1][0],self.y_location-relevant_objects[i][1][1]))
+            except:
+                self.target = ["center",(0,0)]
+                return getDirection((-self.x_location,-self.y_location))
+
+
+        
         
 
     def getLocation(self):

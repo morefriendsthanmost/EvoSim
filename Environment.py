@@ -59,9 +59,9 @@ def generateCreatureVariables (length_of_map, mean_speed = 1.0, mean_radius = 1.
                 y = np.random.normal(0.0, 15)
 
     if baby:
-        standard_deviation = 0.2
+        standard_deviation = 0.01
     else:
-        standard_deviation = 0.1
+        standard_deviation = 0.2
 
     speed         = generateRandomNumberWithLowerLimit (mean_speed, 0.3, standard_deviation)
     radius        = generateRandomNumberWithLowerLimit (mean_radius, 0.3, standard_deviation)
@@ -100,26 +100,15 @@ class Environment(object):
         self.positions_of_creatures = positions_of_creatures
         self.radii_of_creatures     = radii_of_creatures
 
-        foods = []
-        for i in range (number_of_foods):
-            food_x_location, food_y_location, food_energy = generateFoodVariables (100)
-            foods.append(Food(food_x_location, food_y_location, food_energy))
-        self.foods = foods
-
-        #will get the position of each piece of food
-        positions_of_foods = []
-        radii_of_foods     = []
-        for i in range (len(foods)):
-            positions_of_foods.append(foods[i].getLocation())
-            radii_of_foods    .append(foods[i].radius)
-        self.positions_of_foods = positions_of_foods
-        self.radii_of_foods     = radii_of_foods
+        self.generateNewFoods(number_of_foods)
         
-        self.radii_of_creatures_over_time = [copy.deepcopy(radii_of_creatures)]
-        self.radii_of_foods_over_time     = [copy.deepcopy(radii_of_foods)]
+        self.radii_of_creatures_over_time = [copy.deepcopy(self.radii_of_creatures)]
+        self.radii_of_foods_over_time     = [copy.deepcopy(self.radii_of_foods)]
 
-        self.creature_positions_over_time = [copy.deepcopy(positions_of_creatures)]
-        self.food_positions_over_time     = [copy.deepcopy(positions_of_foods)]    
+        self.creature_positions_over_time = [copy.deepcopy(self.positions_of_creatures)]
+        self.food_positions_over_time     = [copy.deepcopy(self.positions_of_foods)]  
+        
+        self.averages_over_cycles = [self.getAverages()]
 
         #####Define tick_length, to change when we know more about it#####
         self.tick_length = tick_length
@@ -128,6 +117,9 @@ class Environment(object):
         self.current_tick = 0
 
     def generateNewFoods (self, number_of_foods):
+        '''
+        adds a set of new foods to the board
+        '''
         foods = []
         for i in range (number_of_foods):
             food_x_location, food_y_location, food_energy = generateFoodVariables (100)
@@ -211,12 +203,18 @@ class Environment(object):
         return (self.radii_of_creatures_over_time, self.creature_positions_over_time, self.radii_of_foods_over_time, self.food_positions_over_time)
 
     def runCycle(self):
+        '''
+        cicles through the specified number of ticks and returns the animation data
+        '''
         for i in range (self.number_of_ticks):
             self.tick()
             print("{0}th tick done. {1}% complete".format(i,int((i/self.number_of_ticks)*100)))
         return (self.getAnimationData())
 
     def afterCycle (self):
+        '''
+        alters everything that needs to be altered in the environment in between cycles
+        '''
         #generate new foods
         self.generateNewFoods(self.number_of_foods)
         
@@ -264,6 +262,32 @@ class Environment(object):
         self.creature_positions_over_time = [copy.deepcopy(self.positions_of_creatures)]
         self.food_positions_over_time     = [copy.deepcopy(self.positions_of_foods)] 
 
+        self.averages_over_cycles.append(self.getAverages())
+    
+    def  getAverages (self):
+        '''
+        returns the average speed, radius, and sensory range of all creatures curently in the environment, as well as the current number of creatures alive
+        '''
+        sum_of_creature_speeds         = 0
+        sum_of_creature_radii          = 0
+        sum_of_creature_sensory_ranges = 0
+        
+        for i in range (len(self.creatures)):
+            sum_of_creature_speeds         += self.creatures[i].speed
+            sum_of_creature_radii          += self.creatures[i].radius
+            sum_of_creature_sensory_ranges += self.creatures[i].sensory_range
+        
+        if 0 != len(self.creatures):
+            average_speed         = sum_of_creature_speeds        /len(self.creatures)
+            average_radius        = sum_of_creature_radii         /len(self.creatures)
+            average_sensory_range = sum_of_creature_sensory_ranges/len(self.creatures)
+        else:
+            average_speed         = 0
+            average_radius        = 0
+            average_sensory_range = 0          
+
+
+        return average_speed,average_radius,average_sensory_range, len(self.creatures)
 
 
 class Food(object):

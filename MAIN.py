@@ -4,8 +4,13 @@ import Creatures as crt
 import Environment as env
 import UI
 
-environment = env.Environment(1, 6)
+number_of_foods     = int(input("Please enter the number of foods generated per cycle "))
+number_of_creatures = int(input("Please enter the number of creature the simulation starts with "))
+
+environment = env.Environment(number_of_creatures, number_of_foods)
 while environment.creatures != []:
     radii_of_creatures_over_time, creature_positions_over_time, radii_of_foods_over_time, food_positions_over_time = environment.runCycle()
-    UI.display_cycle(radii_of_creatures_over_time, creature_positions_over_time, radii_of_foods_over_time, food_positions_over_time, 0.05)
+    UI.displayCycle(radii_of_creatures_over_time, creature_positions_over_time, radii_of_foods_over_time, food_positions_over_time, 0.01)
     environment.afterCycle ()
+
+    UI.displayAfterCycle(environment.averages_over_cycles)

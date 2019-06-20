@@ -117,6 +117,9 @@ class Environment(object):
         self.current_tick = 0
 
     def generateNewFoods (self, number_of_foods):
+        '''
+        adds a set of new foods to the board
+        '''
         foods = []
         for i in range (number_of_foods):
             food_x_location, food_y_location, food_energy = generateFoodVariables (100)
@@ -200,12 +203,18 @@ class Environment(object):
         return (self.radii_of_creatures_over_time, self.creature_positions_over_time, self.radii_of_foods_over_time, self.food_positions_over_time)
 
     def runCycle(self):
+        '''
+        cicles through the specified number of ticks and returns the animation data
+        '''
         for i in range (self.number_of_ticks):
             self.tick()
             print("{0}th tick done. {1}% complete".format(i,int((i/self.number_of_ticks)*100)))
         return (self.getAnimationData())
 
     def afterCycle (self):
+        '''
+        alters everything that needs to be altered in the environment in between cycles
+        '''
         #generate new foods
         self.generateNewFoods(self.number_of_foods)
         

@@ -35,12 +35,14 @@ class Creature(object):
         '''
         Moves the creature for a distance defined by 'self.speed' * 'tick_length' in direction 'direction', a radian value from the positive x axis in a counter-clockwise direction (as is the standard in maths), then subtracts the distance moved from energy required to make this manuever from the current energy
         '''
-        if direction != None:
-            if self.current_energy + -(self.volume * self.speed / tick_length) > 0:
-                self.x_location += (self.speed * tick_length * math.cos(direction))
-                self.y_location += (self.speed * tick_length * math.sin(direction))
+        if direction != None: #if a direction has been chosen
+            if self.current_energy + -(self.volume * self.speed / tick_length) > 0: #if the creature has enough energy to complete the movement
+                if -50 <= self.x_location + (self.speed * tick_length * math.cos(direction)) <= 50:
+                    if -50 <= self.y_location + (self.speed * tick_length * math.sin(direction)) <= 50:
+                        self.x_location += (self.speed * tick_length * math.cos(direction))
+                        self.y_location += (self.speed * tick_length * math.sin(direction))
                 self.current_energy += -(self.volume * self.speed / tick_length) # based off of mv^2/2 - except wanted it to be per unit distance, so then divide by distance, which becomes mv^2/2*v*t, which is mv/2t. Very much up to debate.
-        self.current_energy += -(0.007*self.sensory_range*self.volume)
+        self.current_energy += -(0.007*self.sensory_range*self.volume) #ebergy for metabolic tick
 
     def eatFood(self, food_energy):
         
@@ -72,7 +74,7 @@ class Creature(object):
         '''
         Method in charge of finding the best path for the creature. returns a direction in which to travel
         '''
-        if self.getDistanceToSafeZone()[1]/(self.environment.number_of_ticks - self.environment.current_tick + 1) < self.speed:
+        if self.getDistanceToSafeZone()[1]/(self.environment.number_of_ticks - self.environment.current_tick) < self.speed:
             relevant_objects = self.getSensoryData()
             try:
                 i = 0

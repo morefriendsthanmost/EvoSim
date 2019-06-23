@@ -156,6 +156,7 @@ class Environment(object):
         Makes a time unit pass in the simulation
         '''
         #goes through each of the creatures
+        creatures_eaten = []
         for i in range (len(self.creatures)):
             #gets the direction it will move in
             direction = self.creatures[i].findPath(self.tick_length)
@@ -175,6 +176,21 @@ class Environment(object):
                 del self.foods[foods_eaten[k]-k]
                 del self.positions_of_foods[foods_eaten[k]-k]
                 del self.radii_of_foods[foods_eaten[k]-k]
+            
+            #now to make creatures eat other creatures
+            for j in range (len(self.creatures)):
+                if (self.creatures[i].radius > self.creatures[j].radius*1.30) and not j in creatures_eaten:
+                    distance = getDistance(self.positions_of_creatures[i],self.positions_of_creatures[j])
+                    if distance < (self.creatures[i].radius+self.creatures[j].radius):
+                        self.creatures[i].eatFood(self.creatures[j].current_energy*0.8)
+                        creatures_eaten.append(j)
+        #deleting all creatures marked
+        for k in range (len(creatures_eaten)):
+            del self.creatures[creatures_eaten[k]-k]
+            del self.positions_of_creatures[creatures_eaten[k]-k]
+            del self.radii_of_creatures[creatures_eaten[k]-k]            
+                        
+                
 
 
         radii_of_foods= []
